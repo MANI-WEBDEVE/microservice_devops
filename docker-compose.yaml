@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # Service 1: User Service
+  user-service:
+    build: ./user_service
+    container_name: user-service
+    ports:
+      - "8001:8000"  # Host port 8001, Container port 8000
+    restart: always
+    networks:
+      - manif-network
+
+  # Service 2: Greeting Service
+  greeting-service:
+    build: ./greeting_service
+    container_name: greeting_service
+    ports:
+      - "8002:8000"  # Host port 8002, Container port 8000
+    restart: always
+    networks:
+      - manif-network
+
+# Network definition (Dono services ek dusre se baat kar sakti hain)
+networks:
+  manif-network:
+    driver: bridge
