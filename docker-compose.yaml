@@ -1,12 +1,36 @@
 version: '3.8'
 
 services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: manif-postgres
+    environment:
+      POSTGRES_USER: manif_user
+      POSTGRES_PASSWORD: manif_password
+      POSTGRES_DB: manif_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Data persist karega
+    networks:
+      - manif-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U manif_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Service 1: User Service
   user-service:
-    build: ./user_service
+    build: ./user-service
     container_name: user-service
     ports:
-      - "8001:8000"  # Host port 8001, Container port 8000
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=postgresql://manif_user:manif_password@postgres-db:5432/manif_db
+    depends_on:
+      postgres-db:
+        condition: service_healthy  # Database ready hone ka wait karega
     restart: always
     networks:
       - manif-network
@@ -21,6 +45,11 @@ services:
     networks:
       - manif-network
 
+
+volumes:
+  postgres-data:  # Named volume (data persist karega even after container restart)
+
+  
 # Network definition (Dono services ek dusre se baat kar sakti hain)
 networks:
   manif-network:
