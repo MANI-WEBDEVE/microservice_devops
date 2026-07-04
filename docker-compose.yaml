@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: manif_user
       POSTGRES_PASSWORD: manif_password
       POSTGRES_DB: manif_db
-    ports:
-      - "5432:5432"
+    ports:  
+      - "5432:5432" 
     volumes:
       - postgres-data:/var/lib/postgresql/data  # Data persist karega
     networks:
