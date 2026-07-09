@@ -4,10 +4,12 @@ services:
   postgres-db:
     image: postgres:15-alpine
     container_name: manif-postgres
+    env_file:
+      - .env  # Load env file data
     environment:
-      POSTGRES_USER: manif_user
-      POSTGRES_PASSWORD: manif_password
-      POSTGRES_DB: manif_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:  
       - "5432:5432" 
     volumes:
@@ -24,10 +26,14 @@ services:
   user-service:
     build: ./user_service
     container_name: user_service
+    env_file:
+      - .env
     ports:
-      - "8001:8000"
+      - "${USER_SERVICE_PORT}:8000"
     environment:
-      - DATABASE_URL=postgresql://manif_user:manif_password@postgres-db:5432/manif_db
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - DEBUG_MODE=${DEBUG_MODE}
     depends_on:
       postgres-db:
         condition: service_healthy  # Database ready hone ka wait karega
@@ -40,7 +46,9 @@ services:
     build: ./greeting_service
     container_name: greeting_service
     ports:
-      - "8002:8000"  # Host port 8002, Container port 8000
+      - "${GREETING_SERVICE_PORT}:8000"
+    env_file:
+      - .env
     restart: always
     networks:
       - manif-network

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user-service  # Deployment se match karna chahiye
+  ports:
+  - protocol: TCP
+    port: 80           # Service ka port (internal)
+    targetPort: 8000   # Container ka port
+    nodePort: 30001    # External access port (30000-32767 range)
+  type: NodePort       # External access enable karega

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: greeting-service
-        image: greeting-service:v1
+        image: greeting-service:v2
         imagePullPolicy: Never
         ports:
         - containerPort: 8000
