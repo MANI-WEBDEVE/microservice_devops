@@ -7,7 +7,7 @@ app = FastAPI()
 def get_greeting():
     return {
         "service": "greeting-service",
-        "message": "Hello! Welcome to our platform.",
+        "message": "Hello! Welcome to our greeting service.",
         "status": "healthy",
         "timestamp": datetime.datetime.now().isoformat()
     }
